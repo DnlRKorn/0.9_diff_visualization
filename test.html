@@ -1,12 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+
 <meta charset="utf-8">
 <title>Minimal D3 Example</title>
-<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
- 
-<style>
 
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js" charset="utf-8"></script>
+<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js" charset="utf-8"></script>
+<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+
+<style>
 #chart rect {
   fill: steelblue;
 }
@@ -16,14 +20,76 @@
   font: 10px Helvetica;
   text-anchor: end;
 }
-.bar:hover {
-  fill: orange;
+
+#exTab1 .tab-content {
+  color: white;
+  background-color: #428bca;
+  padding: 5px 15px;
 }
+
+#exTab2 h3 {
+  color: white;
+  background-color: #428bca;
+  padding: 5px 15px;
+}
+
+/* remove border radius for the tab */
+
+#exTab1 .nav-pills>li>a {
+  border-radius: 0;
+}
+
+/* change border radius for the tab , apply corners on top*/
+
+#exTab3 .nav-pills>li>a {
+  border-radius: 4px 4px 0 0;
+}
+
+#exTab3 .tab-content {
+  color: white;
+  background-color: #428bca;
+  padding: 5px 15px;
+}
+
 </style>
 </head>
 <body>
+  <div class="container">
+    <h1>Bootstrap tab panel example (using nav-pills) </h1>
+  </div>
+  <div id="exTab1" class="container">
+    <ul class="nav nav-pills">
+      <li class="active">
+        <a class="xyz" id="xyz" href="#1a" data-toggle="tab">Overview</a>
+      </li>
+      <li><a class="hello" href="#2a" data-toggle="tab">Hello </a>
+      </li>
+      <li><a href="#3a" data-toggle="tab">Applying clearfix</a>
+      </li>
+      <li><a href="#4a" data-toggle="tab">Background color</a>
+      </li>
+    </ul>
 
-<svg id="chart"></svg>
+    <div class="tab-content clearfix">
+      <div class="tab-pane active" id="1a">
+        <h3>Content's background color is the same for the tab</h3>
+      </div>
+      <div class="tab-pane" id="2a">
+
+        <h3> <svg id="chart"></svg> </h3>
+      </div>
+      <div class="tab-pane" id="3a">
+        <h3>We applied clearfix to the tab-content to rid of the gap between the tab and the content</h3>
+      </div>
+      <div class="tab-pane" id="4a">
+        <h3>We use css to change the background color of the content to be equal to the tab</h3>
+      </div>
+    </div>
+  </div>
+
+
+
+  <svg id="chart"></svg>
 </body>
 
 <script>
@@ -55,6 +121,7 @@ var trans = [0,x(data[0]),x(data[0]+data[1])];
 //var trans = [0, 20, 0,0,0,0 ]
 //alert(x(4))
 z = chart.append('svg');
+
 //d3.select(a).append("svg")
 //var bar = d3.select(a).selectAll('g')
 
