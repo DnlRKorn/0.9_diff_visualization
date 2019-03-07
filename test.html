@@ -184,7 +184,7 @@ var barHeight = 50;
 var x;
 var chart = d3.select('#chart')
   .attr('width', width + 100)
-  .attr('height', barHeight * 4);//data.length);
+  .attr('height', barHeight * 10);//data.length);
 function makeChart(g1,intersection,g2){
   x = d3.scale.linear()
   .domain([0, g1+intersection+g2])
@@ -194,19 +194,22 @@ function makeChart(g1,intersection,g2){
   right = x(g1+intersection);
   midpoint = (right + left)/2;
   z = chart.append('svg');
+  if(g1 > 0){
   z.append('text')
-  .attr('x', left/2)
+  .attr('x', left/2+15)
   .attr('y',barHeight/2)
 //  .attr('dy', '.35em')
-  .text('g1-g2');
+  .text('g1-g2');}
+  if(intersection > 0){
   z.append('text')
-  .attr('x', midpoint+18)
+  .attr('x', midpoint+16)
   .attr('y', barHeight/2)
-  .text('intersection');
+  .text('intersection');}
+  if(g2 > 0){
   z.append('text')
   .attr('x', width/2 + right/2)
   .attr('y',barHeight/2)
-  .text('g2-g1');
+  .text('g2-g1');}
 }
 
 function drawChart(row_num, g1,intersection,g2,tx){
