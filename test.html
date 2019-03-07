@@ -393,15 +393,16 @@ $(':file').on('change', function() {
     //}
     var reader = new FileReader();
 
-//    reader.onload = function(e) {
+    reader.onload = function(e) {
 //      j = JSON.parse(reader.result);
 //      buildDefault();
-//    }
+      j = JSON.parse(reader.result)['node_diff'];
+      buildDefault();
+      optionChanged();
+
+    }
     
     reader.readAsText(file);
-    j = JSON.parse(reader.result);
-    buildDefault();
-    optionChanged();
     // Also see .name, .type
 });
 </script>
