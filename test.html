@@ -3,6 +3,7 @@
 <head>
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
 <link rel="stylesheet" href="http://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.css">
 <meta charset="utf-8">
 <title>Minimal D3 Example</title>
 
@@ -10,7 +11,7 @@
 <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js" charset="utf-8"></script>
 <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
 <script src="http://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.js"></script>
 <style>
 #chart rect {
   fill: steelblue;
@@ -81,13 +82,15 @@ tr {
   <div id="exTab1" class="container">
     <ul class="nav nav-pills">
       <li class="active">
-        <a class="xyz" id="xyz" href="#1a" data-toggle="tab">Overview</a>
+        <a class="xyz" id="xyz" href="#1a" data-toggle="tab">Tables</a>
       </li>
-      <li><a class="hello" href="#2a" data-toggle="tab">Hello </a>
+      <li><a class="hello" href="#2a" data-toggle="tab">Bar Graphs</a>
       </li>
-      <li><a href="#3a" data-toggle="tab">Applying clearfix</a>
+      <li><a href="#3a" data-toggle="tab">Intersection</a>
       </li>
-      <li><a href="#4a" data-toggle="tab">Background color</a>
+      <li><a href="#4a" data-toggle="tab">g1-g2 Graph</a>
+      </li>
+      <li><a href="#5a" data-toggle="tab">g2-g1 Graph</a>
       </li>
     </ul>
 
@@ -150,15 +153,17 @@ tr {
 
         <h3> <svg id="chart"></svg> </h3>
       </div>
-      <div class="tab-pane" id="3a">
-        <h3>We applied clearfix to the tab-content to rid of the gap between the tab and the content</h3>
+      <div class="tab-pane" style="background-color: rgba(255,0,0,0.1);" id="3a">
+        <h3 >Intersection Graph</h3><div class="col-xl-12" id="mynetwork1"  style="height: 2000px; background-color: rgba(255,0,0,0.1);"></div>
       </div>
       <div class="tab-pane" id="4a">
-        <h3>We use css to change the background color of the content to be equal to the tab</h3>
+        <h3>g1-g2</h3><div class="col-xl-12" id="mynetwork2"  style="height: 2000px; background-color: rgba(255,0,0,0.1);"></div>
+      </div>
+        <div class="tab-pane" id="5a">
+        <h3>g2-g1</h3><div class="col-xl-12" id="mynetwork3"  style="height: 2000px; background-color: rgba(255,0,0,0.1);"></div>
       </div>
     </div>
   </div>
-
 
 
   <svg id="chart"></svg>
@@ -247,7 +252,8 @@ bar.append('text')
   .attr('y', barHeight / 2)
   .attr('dy', '.35em')
   .text(function(d) {
-    return d;
+    if(d==0){ return null; }
+    else {return d;}
   });
   //chart.append(bar);
   z.append('text')
@@ -285,8 +291,48 @@ for (var key in j ){
   $el.append($("<option></option>")
      .attr("value", key).text(key));
 }
+  function makeGraph(graph_key){
+  var node_id = 1;
+  var node_ids = {}
+  var nodesx =[];
+  var edgesx = [];
+  for (var key in graph[graph_key]['nodes']){
+    var name = graph[graph_key]['nodes'][key]["name"];
+    var idx = graph[graph_key]['nodes'][key]["id"];
+    nodesx.push({id:node_id, label:name});
+    node_ids[idx] = node_id;
+    node_id++;
+  }
+  for (var key in graph[graph_key]['edges']){
+    var from1 = node_ids[graph[graph_key]['edges'][key]['source_id']];
+    var to1 = node_ids[graph[graph_key]['edges'][key]['target_id']];
+    edgesx.push({from:from1,to:to1});
+  }
+  var nodes = new vis.DataSet(nodesx);
 
-  
+  // create an array with edges
+  var edges = new vis.DataSet(edgesx);
+
+  // create a network
+
+  var data = {
+    nodes: nodes,
+    edges: edges
+  };
+  return data;
+  }
+  var data1 = makeGraph('intersection');
+  var container = document.getElementById('mynetwork1');
+  var options = {};
+  var network1 = new vis.Network(container, data1, options);
+  var data2 = makeGraph('g1-g2');
+  container = document.getElementById('mynetwork2');
+  var options = {};
+  var network2 = new vis.Network(container, data2, options);
+  var data3 = makeGraph('g2-g1');
+  container = document.getElementById('mynetwork3');
+  var options = {};
+  var network2 = new vis.Network(container, data3, options);
 }
 
 
@@ -326,18 +372,22 @@ for ( var i=0; i<j[selected_key]['g2-g1'].length; i++){
 ///table.row.add( new Person( 'Airi Satou',     33, 'Accountant' ) );
 $('#table_id1').DataTable({
   destroy: true,
+  "searching": false,
   data:data1});
 $('#table_id2').DataTable({
   destroy: true,
+  "searching": false,
   data:data2});
 $('#table_id3').DataTable({
   destroy: true,
+  "searching": false,
   data:data3});
 
 function makeBlank(){
   return {'g1-g2':new Set(),'g2-g1':new Set(),'intersection':new Set()}
 }
 set1 = {"phenotypic_feature":makeBlank()};
+//set1 = {};
 //!('myKey' in myObject)
 //set1 = new Set();
 l = [selected_key]
@@ -384,7 +434,7 @@ $('#key_select').on('change', function() {
 //$("#key_select").change();
 //buildDefault();
 //optionChanged();
-  
+var graph;
   
 $(':file').on('change', function() {
     var file = this.files[0];
@@ -396,7 +446,9 @@ $(':file').on('change', function() {
     reader.onload = function(e) {
 //      j = JSON.parse(reader.result);
 //      buildDefault();
-      j = JSON.parse(reader.result)['node_diff'];
+      var json = JSON.parse(reader.result);
+      j = json['node_diff'];
+      graph = json['graph_diff']
       buildDefault();
       optionChanged();
 
