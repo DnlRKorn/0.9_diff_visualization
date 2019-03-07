@@ -402,7 +402,8 @@ key1 = selected_key;
       var t = j[key1][key2][i]["type"];
       var name =  j[key1][key2][i]["name"];
       if(Array.isArray(t)){
-        for (var a in t){
+        for (var k=0; k<t.length;k++ ){
+          a = t[k];
           if(!(a in set1)){ set1[a] = makeBlank();}
           set1[a][key2].add(name); }
       }
