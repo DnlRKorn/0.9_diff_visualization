@@ -120,6 +120,7 @@ tr {
         <tr>
             <th>Intersection</th>
              </tr>
+
     </thead>
     <tbody>
     <tr>
@@ -252,6 +253,7 @@ var text_trans = [left/2,midpoint,width-3*right/4 ];
 
 bar.append('text')
   .attr('x', function(d,i) {
+    if(d==1){ return 5; }
     return x(d)/2;
   })
   .attr('y', barHeight / 2)
@@ -355,16 +357,16 @@ data3 = []
 
 for ( var i=0; i<j[selected_key]['g1-g2'].length; i++){
   data1.push(null);
-  data1[i] = [j[selected_key]['g1-g2'][i]["name"]];
+  data1[i] = [j[selected_key]['g1-g2'][i]["name"],  j[selected_key]['g1-g2'][i]["type"]];
   //data1.push(""+j[selected_key]['g1-g2'][i]["name"]);
 }
 for ( var i=0; i<j[selected_key]['intersection'].length; i++){
   data2.push(null);
-  data2[i]=[j[selected_key]['intersection'][i]["name"]];
+  data2[i]=[j[selected_key]['intersection'][i]["name"],j[selected_key]['intersection'][i]["type"]];
 }
 for ( var i=0; i<j[selected_key]['g2-g1'].length; i++){
   data3.push(null);
-  data3[i]=[j[selected_key]['g2-g1'][i]["name"]];
+  data3[i]=[j[selected_key]['g2-g1'][i]["name"],j[selected_key]['g2-g1'][i]["type"]];
 }
 //key_num = 0/
 //for (var key in j[selected_key]){
@@ -382,6 +384,9 @@ $('#table_id1').DataTable({
 $('#table_id2').DataTable({
   destroy: true,
   "searching": false,
+ //   "columns": [
+//    { "width": "80%" },
+//    {"width":"20%"}],
   data:data2});
 $('#table_id3').DataTable({
   destroy: true,
